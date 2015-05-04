@@ -25,7 +25,7 @@ Objecte::Objecte(int npoints, QString n) : numPoints(npoints)
     Index = 0;
     readObj(n);
     make();
-    //capsa = calculCapsa3D();
+    capsa = calculCapsa3D();
 }
 
 

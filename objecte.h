@@ -7,9 +7,9 @@
 
 #include <Common.h>
 #include <cara.h>
-#include <QOpenGLTexture>
 
 #include <QGLShaderProgram>
+#include <QOpenGLTexture>
 
 typedef Common::vec4  color4;
 typedef Common::vec4  point4;

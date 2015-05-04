@@ -18,6 +18,6 @@ OUT vec2 v_texcoord;
 void main()
 {
   gl_Position = projection * model_view *  vPosition;
-  color = vColor;
+  color = intensitat difusa de la llum;
   v_texcoord = vCoordTexture;
 }
