@@ -18,6 +18,7 @@
 #include <bola.h>
 #include <conjuntboles.h>
 #include <camera.h>
+#include <llum.h>
 
 using namespace std;
 
@@ -56,6 +57,10 @@ public:
     PlaBase *plabase;
     Bola *bolaBlanca;
     conjuntBoles *boles;
+
+    //Llum
+    llum *llum_escena;
+    void setAmbientToGPU(QGLShaderProgram *program);
 };
 
 #endif // ESCENA_H

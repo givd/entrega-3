@@ -15,10 +15,19 @@ uniform mat4 projection;
 OUT vec4 color;
 OUT vec2 v_texcoord;
 
+struct tipusLlum
+{
+ vec4 LightPosition;
+ vec3 Ld;
+ vec4 La; //llum ambient
+ vec3 Le; //especular
+ float coef_a; // Aqui s'han de definir tots els atributs d'una llum
+};
+
 void main()
 {
   gl_Position = projection * model_view *  vPosition;
-  // color = intensitat difusa de la llum;
-  color = vColor;
+  color = intensitat difusa de la llum;
+  color = vColor * Ld;
   v_texcoord = vCoordTexture;
 }
