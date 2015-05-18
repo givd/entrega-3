@@ -7,6 +7,7 @@ Objecte::Objecte(int npoints, QObject *parent) : numPoints(npoints) ,
     points = new point4[npoints];
     colors = new color4[npoints];
     vertexTextura = new vec2[npoints];
+    normal = new vec3[npoints];
     //capsa = calculCapsa3D();
 }
 
@@ -33,6 +34,7 @@ Objecte::~Objecte()
 {
     delete points;
     delete colors;
+    delete normal;
     delete vertexTextura;
 }
 
@@ -219,25 +221,27 @@ void Objecte::draw()
     // per si han canviat les coordenades dels punts
     glBufferData( GL_ARRAY_BUFFER,
                   sizeof(point4) * Index +
-                  sizeof(color4) * Index +
+                  sizeof(vec3) * Index +
                   sizeof(vec2) * Index,
                   NULL, GL_STATIC_DRAW );
     glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(point4) * Index, &points[0] );
-    glBufferSubData( GL_ARRAY_BUFFER, sizeof(point4) * Index, sizeof(color4) * Index, &colors[0] );
-    glBufferSubData( GL_ARRAY_BUFFER, sizeof(point4)*Index + sizeof(color4)*Index , sizeof(vec2)*Index, &vertexTextura[0]);
+    glBufferSubData( GL_ARRAY_BUFFER, sizeof(point4) * Index, sizeof(vec3) * Index, &normal[0] );
+    glBufferSubData( GL_ARRAY_BUFFER, sizeof(point4)*Index + sizeof(vec3)*Index , sizeof(vec2)*Index, &vertexTextura[0]);
     // Per a conservar el buffer
     int vertexLocation = program->attributeLocation("vPosition");
-    int colorLocation = program->attributeLocation("vColor");
+    int normalLocation = program->attributeLocation("vNormal");
     int coordTextureLocation = program->attributeLocation("vCoordTexture");
 
     program->enableAttributeArray(vertexLocation);
     program->setAttributeBuffer("vPosition", GL_FLOAT, 0, 4);
 
-    program->enableAttributeArray(colorLocation);
-    program->setAttributeBuffer("vColor", GL_FLOAT, sizeof(point4) * Index, 4);
+    program->enableAttributeArray(normalLocation);
+    program->setAttributeBuffer("vNormal", GL_FLOAT, sizeof(vec4) * Index, 3);
 
     program->enableAttributeArray(coordTextureLocation);
-    program->setAttributeBuffer("vCoordTexture", GL_FLOAT,sizeof(point4)*Index + sizeof(color4)*Index,2 );
+    program->setAttributeBuffer("vCoordTexture", GL_FLOAT,sizeof(point4)*Index + sizeof(vec3)*Index,2 );
+
+    //program->bindAttributeLocation("vNormal",normalLocation);
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glDrawArrays( GL_TRIANGLES, 0, Index );

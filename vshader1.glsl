@@ -28,11 +28,12 @@ struct Material {
 };
 
 IN vec4 vPosition;
-IN vec4 vColor;
+IN vec3 vNormal;
 IN vec2 vCoordTexture;
 uniform mat4 model_view;
 uniform mat4 projection;
 
+OUT vec3 Normal;
 OUT vec4 color;
 OUT vec2 v_texcoord;
 
@@ -43,6 +44,8 @@ void main()
 {
   gl_Position = projection * model_view *  vPosition;
   //color = vColor;
-  color = vec4(llum.color.x, llum.color.y, llum.color.z, 1.0);
+  //color = vec4(llum.color.x, llum.color.y, llum.color.z, 1.0);
+  Normal = normalize(vNormal);
+  color = vec4(Normal,1.0);
   v_texcoord = vCoordTexture;
 }

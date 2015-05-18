@@ -18,14 +18,15 @@ PlaBase::PlaBase(Material *mat): Objecte(NumVerticesF)
 
 void PlaBase::make()
 {
+    vec3 n = cross(vertex[0] - vertex[1],vertex[1] - vertex[2]);
     Index = 6;
-    colors[0] = color; points[0] = vertex[0]; vertexTextura[0] = vec2(0.0,0.0);
-    colors[1] = color; points[1] = vertex[1]; vertexTextura[1] = vec2(1.0,0.0);
-    colors[2] = color; points[2] = vertex[2]; vertexTextura[2] = vec2(1.0,1.0);
+    normal[0] = n; points[0] = vertex[0]; vertexTextura[0] = vec2(0.0,0.0);
+    normal[1] = n; points[1] = vertex[1]; vertexTextura[1] = vec2(1.0,0.0);
+    normal[2] = n; points[2] = vertex[2]; vertexTextura[2] = vec2(1.0,1.0);
 
-    colors[3] = color; points[3] = vertex[2]; vertexTextura[3] = vec2(1.0,1.0);
-    colors[4] = color; points[4] = vertex[3]; vertexTextura[4] = vec2(0.0,1.0);
-    colors[5] = color; points[5] = vertex[0]; vertexTextura[5] = vec2(0.0,0.0);
+    normal[3] = n; points[3] = vertex[2]; vertexTextura[3] = vec2(1.0,1.0);
+    normal[4] = n; points[4] = vertex[3]; vertexTextura[4] = vec2(0.0,1.0);
+    normal[5] = n; points[5] = vertex[0]; vertexTextura[5] = vec2(0.0,0.0);
 
     initTextura("://resources/Fabric_Green_L.jpg");
 }

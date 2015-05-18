@@ -41,8 +41,10 @@ void Bola::make(){
 void Bola::triangle(const point4 &a, const point4 &b, const point4 &c)
 {
     float u, v;
+    vec4 vr[3] = {a, b, c};
+    vec3 n = cross(vr[0] - vr[1],vr[1] - vr[2]);
     points[Index] = a;
-    colors[Index] = color;
+    normal[Index] = n;
     u = 0.5 + atan2(a.z,a.x)/2*M_PI;
     v = 0.5 - asin(a.y)/M_PI;
     if(u < 0)u=0;if(u > 1)u=1;
@@ -50,7 +52,7 @@ void Bola::triangle(const point4 &a, const point4 &b, const point4 &c)
     vertexTextura[Index]=vec2(u,v);
     Index++;
     points[Index] = b;
-    colors[Index] = color;
+    normal[Index] = n;
     u = 0.5 + atan2(b.z,b.x)/2*M_PI;
     v = 0.5 - asin(b.y)/M_PI;
     if(u < 0)u=0;if(u > 1)u=1;
@@ -58,7 +60,7 @@ void Bola::triangle(const point4 &a, const point4 &b, const point4 &c)
     vertexTextura[Index]=vec2(u,v);
     Index++;
     points[Index] = c;
-    colors[Index] = color;
+    normal[Index] = n;
     u = 0.5 + atan2(c.z,c.x)/2*M_PI;
     v = 0.5 - asin(c.y)/M_PI;
     if(u < 0)u=0;if(u > 1)u=1;

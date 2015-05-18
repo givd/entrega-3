@@ -42,6 +42,7 @@ protected:
     int     numPoints;
     point4 *points;
     color4 *colors;
+
     vec2 *vertexTextura;
     Material *mat;
     QOpenGLTexture *texture;
@@ -53,7 +54,7 @@ public:
 
   // Capsa mínima contenidora de l'objecte
     Capsa3D capsa;
-
+    vec3 *normal;
     Capsa3D recalculaCapsa3D(Capsa3D capsa);
 
     //explicit Objecte(QObject *parent = 0);
