@@ -7,6 +7,7 @@
 
 #include <Common.h>
 #include <cara.h>
+#include <material.h>
 
 #include <QGLShaderProgram>
 #include <QOpenGLTexture>
@@ -42,6 +43,7 @@ protected:
     point4 *points;
     color4 *colors;
     vec2 *vertexTextura;
+    Material *mat;
     QOpenGLTexture *texture;
     int Index; // index de control del numero de vertexs a posar a la GPU
     void initTextura(QString route);

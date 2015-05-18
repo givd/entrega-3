@@ -1,6 +1,6 @@
 #include "bola.h"
 
-Bola::Bola(): Objecte(NumInitVertices)
+Bola::Bola(Material *mat): Objecte(NumInitVertices)
 {
     xorig = 0; yorig = 0; zorig = 0;
     vertex[0] = point4(      0.0,       0.0,       1.0, 1.0);
@@ -10,10 +10,11 @@ Bola::Bola(): Objecte(NumInitVertices)
 
     color = color4( 255.0 , 255.0 , 255.0 , 1.0 );
     this->texturePath = "://resources/Bola0.jpg";
+    this->mat = mat;
 
 }
 
-Bola::Bola(const QString &texturePath) : Objecte(NumInitVertices)
+Bola::Bola(const QString &texturePath, Material *mat) : Objecte(NumInitVertices)
 {
     xorig = 0; yorig = 0; zorig = 0;
     vertex[0] = point4(      0.0,       0.0,       1.0, 1.0);
@@ -22,8 +23,9 @@ Bola::Bola(const QString &texturePath) : Objecte(NumInitVertices)
     vertex[3] = point4( 0.816497, -0.471405, -0.333333, 1.0);
     color = color4( 255.0 , 255.0 , 255.0 , 1.0 );
     this->texturePath = ":/"+texturePath;
-    //point4 pos = point4(0.0 , 0.5 , 0.0 , 1.0);
-    //aplicaTG(Translate(pos));
+    this->mat = mat;
+    /*point4 pos = point4(0.0 , 0.5 , 0.0 , 1.0);
+    aplicaTG(Translate(pos));*/
 }
 
 void Bola::make(){

@@ -87,7 +87,7 @@ QSize GLWidget::sizeHint() const
 }
 
 
-static void qNormalizeAngle(int &angle)
+static void qNormalizeAngle(double &angle)
 {
     while (angle < 0)
         angle += 360 * 16;
@@ -98,30 +98,35 @@ static void qNormalizeAngle(int &angle)
 
 void GLWidget::setXRotation(int angle)
 {
-    qNormalizeAngle(angle);
-    if (angle != xRot) {
-        xRot = angle;
-        update();
-    }
+    if (angle > 0) {
+        esc->camGeneral->vs.angx += 1.0;
+    } else if (angle<0)
+        esc->camGeneral->vs.angx -= 1.0;
+    qNormalizeAngle(esc->camGeneral->vs.angx);
+    esc->setAnglesCamera(cameraActual, esc->camGeneral->vs.angx, esc->camGeneral->vs.angy, esc->camGeneral->vs.angz);
+    updateGL();
 }
 
 
 void GLWidget::setYRotation(int angle)
 {
-    qNormalizeAngle(angle);
-    if (angle != yRot) {
-        yRot = angle;
-        update();
-    }
+    if (angle > 0) {
+        esc->camGeneral->vs.angy += 1.0;
+    } else if (angle<0)
+        esc->camGeneral->vs.angy -= 1.0;
+
+    qNormalizeAngle(esc->camGeneral->vs.angy);
+    esc->setAnglesCamera(cameraActual, esc->camGeneral->vs.angx, esc->camGeneral->vs.angy, esc->camGeneral->vs.angz);
+    updateGL();
 }
 
 void GLWidget::setZRotation(int angle)
 {
-    qNormalizeAngle(angle);
+    /*qNormalizeAngle(angle);
     if (angle != zRot) {
         zRot = angle;
         update();
-    }
+    }*/
 }
 
 
@@ -184,14 +189,26 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    //lastPos = event->pos();
+    lastPos = event->pos();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
+    if(cameraActual == false)return;
+
     int dx = event->x() - lastPos.x();
     int dy = event->y() - lastPos.y();
 
+    if (event->buttons() & Qt::LeftButton) {
+        if(lastPos.y()!= event->y()) {
+            setXRotation(dy);
+        }
+        else if (lastPos.x()!= event->x()) {
+            setYRotation(dx);
+        }
+    }
+    lastPos = event->pos();
+    /*
     if (event->buttons() & Qt::LeftButton) {
         setXRotation(xRot + 8 * dy);
 
@@ -202,7 +219,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     } else if (event->buttons() & Qt::MiddleButton) {
         setYRotation(yRot + 8 * dx);
     }
-    lastPos = event->pos();
+    lastPos = event->pos();*/
 }
 
 
@@ -293,7 +310,13 @@ void GLWidget::newPlaBase()
 {
     // Metode que crea un objecte PlaBase poligon amb el punt central al (0,0,0) i perpendicular a Y=0
     PlaBase *obj;
-    obj = new PlaBase();
+    vec3 ka = vec3(0.0, 0.05, 0.0);
+    vec3 kd = vec3(0.4, 0.5, 0.4);
+    vec3 ke = vec3(0.04, 0.7, 0.04);
+    float kre = 0.078125 * 128;
+
+    Material *mat = new Material(ka, kd, ke, kre);
+    obj = new PlaBase(mat);
     obj->make();
     obj->aplicaTG(Scale(0.5,1,1));
     newObjecte(obj);
@@ -309,11 +332,11 @@ void GLWidget::newObj(QString fichero)
     newObjecte(obj);
 }
 
-void GLWidget::newBola()
+void GLWidget::newBola(Material *mat)
 {
     // Metode que crea la Bola blanca de joc
     Bola *obj;
-    obj = new Bola();
+    obj = new Bola(mat);
     obj->make();
     newObjecte(obj);
 }
@@ -334,7 +357,7 @@ void GLWidget::newConjuntBoles()
        cjt->toGPU(program);
        esc->addBoles(cjt);
 
-       updateGL();
+       //updateGL();
 
 }
 void GLWidget::newSalaBillar()
@@ -342,9 +365,30 @@ void GLWidget::newSalaBillar()
     //QString q = "://resources/taula.obj";
     //newObj(q);
     newPlaBase();
-    newBola();
+    vec4 ka = vec4(0.25, 0.20725, 0.20725, 1);
+    vec4 kd = vec4(1.0, 0.829, 0.829, 1);
+    vec4 ke = vec4(0.296648, 0.296648, 0.296648, 1);
+    float kre = 0.088*128;
+    Material *mat = new Material(ka, kd, ke, kre);
+    newBola(mat);
     newConjuntBoles();
     esc->setAmbientToGPU(program);
+
+
+
+    esc->CapsaMinCont3DEscena();
+    point4 vrp;
+    vrp[0] = esc->capsaMinima.pmin[0]+(esc->capsaMinima.a/2.0);
+    vrp[1] = esc->capsaMinima.pmin[1]+(esc->capsaMinima.h/2.0);
+    vrp[2] = esc->capsaMinima.pmin[2]+(esc->capsaMinima.p/2.0);
+    vrp[3] = 1.0;
+
+    esc->setVRPCamera(cameraActual, vrp);
+
+    esc->camGeneral->CalculWindow(esc->capsaMinima);
+    esc->camGeneral->AmpliaWindow(-0.1);
+    esc->camGeneral->CalculaMatriuProjection();
+    updateGL();
 }
 
 // Metode per iniciar la dinàmica del joc

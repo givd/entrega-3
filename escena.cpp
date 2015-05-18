@@ -28,24 +28,31 @@ Escena::~Escena()
 void Escena::iniCamera(bool camGeneral, int ampladaViewport, int alcadaViewport, QGLShaderProgram *program)
 {
     if(camGeneral){
+        this->camGeneral->piram.proj = PARALLELA;
         this->camGeneral->ini(ampladaViewport,alcadaViewport,capsaMinima);
-        point4 p = vec4(0,0,0,1);
-        this->camGeneral->vs.obs = vec4(0,5,0,1);
-        this->camGeneral->vs.vup = vec4(0,0,1,0);
+
+        this->camGeneral->vs.obs = vec4(0.0,20.0,0.0,1.0);
+        point4 p = vec4(0,0,0,1);        
         setVRPCamera(1,p);
-        setAnglesCamera(true,180.0,90.0,90.0);
-        this->camGeneral->toGPU(program);
+        setDCamera(true,20.0);
+        setAnglesCamera(true,-90.0,0.0,0.0);
+
+        this->camGeneral->CalculWindow(capsaMinima);
+        this->camGeneral->piram.dant = 0.1;
+        this->camGeneral->piram.dpost = 30.0;
+        this->camGeneral->CalculaMatriuProjection();
     }
 
 }
 
 void Escena::setAnglesCamera(bool camGeneral, float angX, float angY, float angZ)
 {
+
     if(camGeneral == true){
         this->camGeneral->vs.angx = angX;
         this->camGeneral->vs.angy = angY;
         this->camGeneral->vs.angz = angZ;
-        vec3 vu = camGeneral.CalculVup(camGeneral.vs.angx, camGeneral.vs.angy, camGeneral.vs.angz);
+        vec3 vu = this->camGeneral->CalculVup(this->camGeneral->vs.angx, this->camGeneral->vs.angy, this->camGeneral->vs.angz);
         this->camGeneral->vs.vup = vec4(vu[0], vu[1], vu[2], 0.0);
         this->camGeneral->vs.obs = this->camGeneral->CalculObs(this->camGeneral->vs.vrp, this->camGeneral->piram.d, this->camGeneral->vs.angx, this->camGeneral->vs.angy);
         this->camGeneral->CalculaMatriuModelView();

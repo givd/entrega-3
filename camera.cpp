@@ -16,7 +16,7 @@ Camera::Camera()
     vp.pmin[1] = 0;
 
     piram.proj = PARALLELA;
-    piram.d = 100;
+    piram.d = 2;
 }
 
 void Camera::ini(int a, int h, Capsa3D capsaMinima)
@@ -31,31 +31,14 @@ void Camera::ini(int a, int h, Capsa3D capsaMinima)
     vp.h = h;
     vp.pmin[0] = 0;
     vp.pmin[1] = 0;
-
-    //Establim la mida de la Window
-    wd.a = 2;
-    wd.h = 2;
-    wd.pmin[0] = -1;
-    wd.pmin[1] = -1;
-
-
-    piram.dant = -5;
-    piram.dpost= 5;
 }
 
 
 
 void Camera::toGPU(QGLShaderProgram *program)
 {
-    CalculaMatriuModelView();
-    CalculaMatriuProjection();
-    CalculAngleOberturaHoritzontal();
-    CalculAngleOberturaVertical();
-    model_view = program->uniformLocation("model_view");
-    glUniformMatrix4fv(model_view,1,GL_TRUE,this->modView);
-
-    projection = program->uniformLocation("projection");
-    glUniformMatrix4fv(projection,1,GL_TRUE,this->proj);
+    this->setProjectionToGPU(program, this->proj);
+    this->setModelViewToGPU(program, this->modView);
 }
 
 
@@ -79,23 +62,36 @@ void Camera::CalculaMatriuProjection()
 {
     proj = identity();
 
-    this->proj = Frustum(wd.pmin.x, wd.pmin.x + wd.a, wd.pmin.y, wd.pmin.y + wd.h, piram.dant, piram.dpost);
+    if(piram.proj == PARALLELA){
+       proj = Ortho(wd.pmin.x, wd.pmin.x+wd.a, wd.pmin.y, wd.pmin.y+wd.h, piram.dant, piram.dpost);
+    }
 
+    if(piram.proj == PERSPECTIVA){
+       proj = Frustum(wd.pmin.x, wd.pmin.x+wd.a, wd.pmin.y, wd.pmin.y+wd.h, piram.dant, piram.dpost);
+    }
 }
 
 
 void Camera::CalculWindow( Capsa3D c)
 {
-   // CODI A MODIFICAR DURANT LA PRACTICA 2
+    mat4 MDP;
+    vec4  vaux[8], vauxMod[8];
 
-    wd.pmin.x = c.pmin.x;
-    wd.pmin.y = c.pmin.y;
+    if (piram.proj==PERSPECTIVA) {
+        CreaMatDp(MDP);
+        modView = MDP * modView;
+    }
 
-    wd.a = c.a;
-    wd.h = c.h;
+    VertexCapsa3D(c, vaux);
 
+    for(int i=0; i<8; i++) {
+        vauxMod[i]= modView * vaux[i];
+    }
 
+    wd = CapsaMinCont2DXYVert(vauxMod, 8);
+    AjustaAspectRatioWd();
 }
+
 
 void Camera::setViewport(int x, int y, int a, int h)
 {
@@ -304,19 +300,12 @@ vec4 Camera::CalculObs(vec4 vrp, double d, double angx, double angy)
 vec3 Camera::CalculVup(double angx, double angy, double angz)
 {
   vec3 v;
-  int   x, y;
+  double sx = sin(PI*angx/180.);
+  double cx = cos(PI*angx/180.);
+  double sy = sin(PI*angy/180.);
+  double cy = cos(PI*angy/180.);
 
-  x = 1.0;
-  y = 1.0;
-
-  if (cos(PI*angx/180.)<0.0) y = -1.0;
-
-  if (cos(PI*angy/180.)<0.0) x = -1.0;
-
-
-  v[0] = x*sin (-PI*angz/180.);
-  v[1] = y*cos( -PI*angz/180.);
-  v[2] = 0.0;
+  v = vec3(sx*sy, cx, sx*cy);
 
   return(v);
 

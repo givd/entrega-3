@@ -32,7 +32,7 @@ public:
 public slots:
     void newPlaBase();
     void newObj(QString fichero);
-    void newBola();
+    void newBola(Material *mat);
     void newConjuntBoles();
     void newSalaBillar();
 

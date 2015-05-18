@@ -14,8 +14,8 @@ const int NumInitVertices = 100000;
 class Bola: public Objecte
 {
 public:
-    Bola();
-    Bola(const QString &texturePath);
+    Bola(Material *mat);
+    Bola(const QString &texturePath, Material *mat);
     ~Bola();
     void make();
 private:

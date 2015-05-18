@@ -14,7 +14,7 @@ const int NumVerticesF = 6; // (1 face, 2 triangles per face, 3 vertex per trian
 class PlaBase: public Objecte
 {
 public:
-    PlaBase();
+    PlaBase(Material *mat);
     ~PlaBase();
     void make();
 private:

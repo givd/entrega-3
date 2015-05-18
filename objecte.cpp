@@ -203,7 +203,8 @@ void Objecte::toGPU(QGLShaderProgram *pr){
     glBindBuffer( GL_ARRAY_BUFFER, buffer );    
     program->link();
     program->bind();
-    glEnable( GL_DEPTH_TEST );    
+    glEnable( GL_DEPTH_TEST );
+    this->mat->toGPU(program);
 }
 
 // Pintat en la GPU.
@@ -238,8 +239,7 @@ void Objecte::draw()
     program->enableAttributeArray(coordTextureLocation);
     program->setAttributeBuffer("vCoordTexture", GL_FLOAT,sizeof(point4)*Index + sizeof(color4)*Index,2 );
 
-    glPolygonMode(GL_FRONT_AND_BACK,
-                  GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glDrawArrays( GL_TRIANGLES, 0, Index );
 
     // Abans nomes es feia: glDrawArrays( GL_TRIANGLES, 0, NumVerticesP );
