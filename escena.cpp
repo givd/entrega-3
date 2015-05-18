@@ -12,6 +12,7 @@ Escena::Escena()
     plabase = NULL;
     bolaBlanca = NULL;
     boles = NULL;
+    llum_escena = new llum(vec3(0.5, 0.5, 0.5), 1., 0., 0., vec4(0., 0., 20., 1));
 }
 
 Escena::~Escena()
@@ -40,15 +41,28 @@ void Escena::iniCamera(bool camGeneral, int ampladaViewport, int alcadaViewport,
 
 void Escena::setAnglesCamera(bool camGeneral, float angX, float angY, float angZ)
 {
-    if(camGeneral)
-        this->camGeneral->CalculVup(angX,angY,angZ);
+    if(camGeneral == true){
+        this->camGeneral->vs.angx = angX;
+        this->camGeneral->vs.angy = angY;
+        this->camGeneral->vs.angz = angZ;
+        vec3 vu = camGeneral.CalculVup(camGeneral.vs.angx, camGeneral.vs.angy, camGeneral.vs.angz);
+        this->camGeneral->vs.vup = vec4(vu[0], vu[1], vu[2], 0.0);
+        this->camGeneral->vs.obs = this->camGeneral->CalculObs(this->camGeneral->vs.vrp, this->camGeneral->piram.d, this->camGeneral->vs.angx, this->camGeneral->vs.angy);
+        this->camGeneral->CalculaMatriuModelView();
+    }
 }
 
 void Escena::setVRPCamera(bool camGeneral, vec4 vrp)
 {
     if(camGeneral){
         this->camGeneral->vs.vrp=vrp;
-        this->camGeneral->piram.d = length(this->camGeneral->vs.obs - vrp);
+        this->camGeneral->vs.angx = 180.0/M_PI * atan2(vrp.y-this->camGeneral->vs.obs.y,
+                                                       vrp.z-this->camGeneral->vs.obs.z);
+        this->camGeneral->vs.angy = 180.0/M_PI * atan2(this->camGeneral->vs.obs.x - vrp.x,
+                                                       this->camGeneral->vs.obs.z - vrp.z);
+        this->camGeneral->vs.angz = 180.0/M_PI * atan2(vrp.y-this->camGeneral->vs.obs.y,
+                                                       vrp.x-this->camGeneral->vs.obs.x);
+        this->camGeneral->CalculaMatriuProjection();
     }
 }
 
@@ -164,6 +178,11 @@ void Escena::draw() {
     if (boles!=NULL)
         boles->draw();
 
+}
+
+void Escena::setAmbientToGPU(QGLShaderProgram *program)
+{
+    this->llum_escena->toGPU(program);
 }
 
 

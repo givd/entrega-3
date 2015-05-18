@@ -344,6 +344,7 @@ void GLWidget::newSalaBillar()
     newPlaBase();
     newBola();
     newConjuntBoles();
+    esc->setAmbientToGPU(program);
 }
 
 // Metode per iniciar la dinàmica del joc

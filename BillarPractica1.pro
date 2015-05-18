@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     bola.cpp \
     conjuntboles.cpp \
     camera.cpp \
-    llum.cpp
+    llum.cpp \
+    material.cpp
 
 HEADERS  += mainwindow.h \
     vec.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     bola.h \
     conjuntboles.h \
     camera.h \
-    llum.h
+    llum.h \
+    material.h
 
 FORMS    += mainwindow.ui
 

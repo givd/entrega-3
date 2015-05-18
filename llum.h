@@ -8,21 +8,30 @@
 class llum
 {
 public:
-    llum(QGLShaderProgram *program, int tipus);
+
+    // Puntual
+    llum(vec3 color,float a,float b,float c,vec4 position);
+    // Direccional
+    llum(vec3 color,float a,float b,float c,vec3 direction);
+    // Spotlight
+    llum(vec3 color,float a,float b,float c,vec4 position, vec3 direction, float angle);
+
     void toGPU(QGLShaderProgram *program);
 
-    vec4 posicio;
-    vec4 direccio;
-    vec4 ambient;
-    vec4 difusa;
-    vec4 especular;
-
-    int la;
-    int ls;
-    int ld;
-    int posiciollum;
-    int direcciollum;
     ~llum();
+
+private:
+
+    int tipus; // 0-puntual 1-direccional 2-spotlight
+
+    vec4 position;
+    vec3 direction;
+    vec3 color;
+
+    float angle;
+    float a;
+    float b;
+    float c;
 
 };
 
