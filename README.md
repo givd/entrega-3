@@ -1,7 +1,7 @@
-//Adabta objecte tamany widjet
-//Aplica TG centrat de la classe objecte & escena
-//Aplica TG conjunt boles incorrecte
-//Capsa min contenidora d'escena no implementada
-//moviment de la bola sense sentit (ERRONI)
-//capsa de conjunt boles no implentada
-//sistema rotacio invertit
+Correccions respecte l'entrega anterior:
+
+- S'ha millorat la càmera i s'ha inicialitzat com es demanava.
+- S'ha habilitat el moviment amb el ratolí (de la càmera, no de l'escena)
+- S'ha corregit els mètodes per canviar els paràmetre de la càmera de la classe escena
+
+
